@@ -29,6 +29,7 @@
         public string showRealKPS;
         public string showNextBPM;
         public string setNextBPM;
+        public string setOrder;
     }
     
     public class Korean : Language
@@ -62,6 +63,7 @@
             showRealKPS = "실제 초당 클릭";
             showNextBPM = "다음 BPM 띄우기";
             setNextBPM = "다음 BPM 글자";
+            setOrder = "순서";
         }
     }
     
@@ -96,6 +98,7 @@
             showRealKPS = "Real Key Per Second";
             showNextBPM = "Show Next BPM";
             setNextBPM = "Next BPM Text";
+            setOrder = "Order";
         }
     }
 
@@ -130,6 +133,7 @@
             showRealKPS = "每秒实际按键数";
             showNextBPM = "显示下一个BPM";
             setNextBPM = "下一个BPM文本";
+            setOrder = "顺序";
         }
     }
 }

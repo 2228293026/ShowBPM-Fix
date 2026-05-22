@@ -41,6 +41,12 @@ namespace ShowBPM
         public string text4 = "Real KPS - {value}";
         public string text5 = "Next BPM - {value}";
 
+        // Display order (0 = first, higher = later)
+        public int tileBpmOrder = 0;
+        public int realBpmOrder = 1;
+        public int kpsOrder = 2;
+        public int nextBpmOrder = 3;
+
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             string path = GetPath(modEntry);

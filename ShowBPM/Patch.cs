@@ -114,7 +114,7 @@ internal static class Patch
             if (!Main.IsEnabled || !__instance.controller.gameworld || floor == null || floor.nextfloor == null)
                 return;
 
-            var displayLines = new List<string>();
+            var displayItems = new List<(int order, string text)>();
 
             double planetSpeed = __instance.controller.planetarySystem.speed;
             double curFloorBpm = GetRealBpm(floor, bpm) * playbackSpeed * pitch;
@@ -128,18 +128,18 @@ internal static class Patch
 
             if (Main.setting.onTileBpm)
             {
-                displayLines.Add(Main.setting.text1.Replace("{value}", FormatValue((float)(bpm * planetSpeed))));
+                displayItems.Add((Main.setting.tileBpmOrder, Main.setting.text1.Replace("{value}", FormatValue((float)(bpm * planetSpeed)))));
             }
 
             if (Main.setting.onCurBpm)
             {
-                displayLines.Add(Main.setting.text2.Replace("{value}", FormatValue((float)curFloorBpm)));
+                displayItems.Add((Main.setting.realBpmOrder, Main.setting.text2.Replace("{value}", FormatValue((float)curFloorBpm))));
             }
 
             if (Main.setting.onRecommandKPS)
             {
                 double kps = curFloorBpm / 60.0;
-                displayLines.Add(Main.setting.text3.Replace("{value}", Math.Round(kps).ToString()));
+                displayItems.Add((Main.setting.kpsOrder, Main.setting.text3.Replace("{value}", Math.Round(kps).ToString())));
             }
 
             if (Main.setting.onNextBpm)
@@ -148,16 +148,18 @@ internal static class Patch
                 if (nextChange != null)
                 {
                     double nextBpm = nextChange.speed * bpm * playbackSpeed * pitch;
-                    displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm)));
+                    displayItems.Add((Main.setting.nextBpmOrder, Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm))));
                 }
             }
+
+            displayItems.Sort((a, b) => a.order.CompareTo(b.order));
 
             if (scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
             {
                 callRateTracker.TrackCall();
             }
 
-            Main.gui.SetText(string.Join("\n", displayLines));
+            Main.gui.SetText(string.Join("\n", displayItems.ConvertAll(x => x.text)));
             isPrevSpeedTransition = isSpeedTransition;
             prevFloorBpm = curFloorBpm;
         }
@@ -374,7 +376,7 @@ internal static class Patch
     {
         Main.gui.TextObject.SetActive(true);
 
-        var displayLines = new List<string>();
+        var displayItems = new List<(int order, string text)>();
 
         if (scnGame.instance != null)
         {
@@ -410,18 +412,18 @@ internal static class Patch
 
         if (Main.setting.onTileBpm)
         {
-            displayLines.Add(Main.setting.text1.Replace("{value}", FormatValue(tileBpm)));
+            displayItems.Add((Main.setting.tileBpmOrder, Main.setting.text1.Replace("{value}", FormatValue(tileBpm))));
         }
 
         if (Main.setting.onCurBpm)
         {
-            displayLines.Add(Main.setting.text2.Replace("{value}", FormatValue(tileBpm)));
+            displayItems.Add((Main.setting.realBpmOrder, Main.setting.text2.Replace("{value}", FormatValue(tileBpm))));
         }
 
         if (Main.setting.onRecommandKPS)
         {
             float kps = tileBpm / 60f;
-            displayLines.Add(Main.setting.text3.Replace("{value}", Math.Round(kps).ToString()));
+            displayItems.Add((Main.setting.kpsOrder, Main.setting.text3.Replace("{value}", Math.Round(kps).ToString())));
         }
 
         if (Main.setting.onNextBpm && controller.currFloor != null)
@@ -430,11 +432,12 @@ internal static class Patch
             if (nextChange != null)
             {
                 double nextBpm = nextChange.speed * bpm * playbackSpeed * pitch;
-                displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm)));
+                displayItems.Add((Main.setting.nextBpmOrder, Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm))));
             }
         }
 
-        Main.gui.SetText(string.Join("\n", displayLines));
+        displayItems.Sort((a, b) => a.order.CompareTo(b.order));
+        Main.gui.SetText(string.Join("\n", displayItems.ConvertAll(x => x.text)));
         Main.gui.SetSize(Main.setting.size);
     }
 

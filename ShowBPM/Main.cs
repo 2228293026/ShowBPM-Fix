@@ -78,11 +78,11 @@ namespace ShowBPM
 
         private static void OnGUI(UnityModManager.ModEntry modEntry)
         {
-            DrawToggleTextField(ref setting.onTileBpm, language.showTileBPM, ref setting.text1, language.setTileBPM);
-            DrawToggleTextField(ref setting.onCurBpm, language.showRealBPM, ref setting.text2, language.setRealBPM);
-            DrawToggleTextField(ref setting.onRecommandKPS, language.showKPS, ref setting.text3, language.setKPS);
+            DrawToggleTextField(ref setting.onTileBpm, language.showTileBPM, ref setting.text1, language.setTileBPM, ref setting.tileBpmOrder, language.setOrder);
+            DrawToggleTextField(ref setting.onCurBpm, language.showRealBPM, ref setting.text2, language.setRealBPM, ref setting.realBpmOrder, language.setOrder);
+            DrawToggleTextField(ref setting.onRecommandKPS, language.showKPS, ref setting.text3, language.setKPS, ref setting.kpsOrder, language.setOrder);
 
-            DrawToggleTextField(ref setting.onNextBpm, language.showNextBPM, ref setting.text5, language.setNextBPM);
+            DrawToggleTextField(ref setting.onNextBpm, language.showNextBPM, ref setting.text5, language.setNextBPM, ref setting.nextBpmOrder, language.setOrder);
 
             DrawSpeedTextToggle();
 
@@ -123,6 +123,24 @@ namespace ShowBPM
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(30f);
                 text = MoreGUILayout.NamedTextField(textLabel, text, 300f);
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        private static void DrawToggleTextField(ref bool toggle, string toggleLabel, ref string text, string textLabel, ref int order, string orderLabel)
+        {
+            toggle = GUILayout.Toggle(toggle, toggleLabel);
+
+            if (toggle)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(30f);
+                text = MoreGUILayout.NamedTextField(textLabel, text, 250f);
+                int newOrder = (int)MoreGUILayout.NamedSlider(orderLabel, order, 0f, 4f, 80f, 1f, 40f, "{0:0}");
+                if (newOrder != order)
+                {
+                    order = newOrder;
+                }
                 GUILayout.EndHorizontal();
             }
         }
