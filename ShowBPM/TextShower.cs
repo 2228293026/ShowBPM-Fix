@@ -15,19 +15,23 @@ namespace ShowBPM
         private RectTransform realKPSRectTransform;
         private GameObject realKPSObject;
         private string lastRealKPSText;
-        private const int ReferenceFontSize = 40;
+        private const int RefFontSize = 40;
 
         public void SetSize(int size)
         {
-            float s = size / (float)ReferenceFontSize;
-            TextObject.transform.localScale = new Vector3(s, s, 1);
+            text.fontSize = RefFontSize;
+            TextObject.transform.localScale = Vector3.one * (size / (float)RefFontSize);
+            var textSize = new Vector2(text.preferredWidth, text.preferredHeight);
+            text.rectTransform.sizeDelta = textSize;
+            rectTransform.sizeDelta = textSize;
         }
 
         public void SetText(string content)
         {
             text.text = content;
-            text.rectTransform.sizeDelta = new Vector2(text.preferredWidth, text.preferredHeight);
-            SyncKpsStyle();
+            var textSize = new Vector2(text.preferredWidth, text.preferredHeight);
+            text.rectTransform.sizeDelta = textSize;
+            rectTransform.sizeDelta = textSize;
         }
 
         public void SetPosition(float x, float y)
@@ -35,7 +39,7 @@ namespace ShowBPM
             var pos = new Vector2(x, y);
             rectTransform.anchorMin = pos;
             rectTransform.anchorMax = pos;
-            rectTransform.pivot = pos;
+            rectTransform.pivot = new Vector2(GetAlignFloat(Main.setting.align), 1f);
             SyncKpsStyle();
         }
 
@@ -48,6 +52,7 @@ namespace ShowBPM
             realKPSRectTransform.anchorMax = new Vector2(alignX, 0);
             realKPSRectTransform.pivot = new Vector2(alignX, 1);
             realKPSRectTransform.anchoredPosition = new Vector2(0, -5);
+            realKPSText.fontSize = RefFontSize;
             realKPSText.fontStyle = Main.setting.useBold ? FontStyle.Bold : FontStyle.Normal;
             realKPSText.font = text.font;
             realKPSShadow.enabled = Main.setting.useShadow;
@@ -75,28 +80,18 @@ namespace ShowBPM
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 1f;
 
-            TextObject = new GameObject("SizeWrapper");
+            TextObject = new GameObject("TextObject");
             TextObject.transform.SetParent(transform);
-            var wrapperRect = TextObject.AddComponent<RectTransform>();
-            wrapperRect.anchorMin = Vector2.zero;
-            wrapperRect.anchorMax = Vector2.one;
-            wrapperRect.pivot = Vector2.zero;
-            wrapperRect.offsetMin = Vector2.zero;
-            wrapperRect.offsetMax = Vector2.zero;
-            float s = Main.setting.size / (float)ReferenceFontSize;
-            TextObject.transform.localScale = new Vector3(s, s, 1);
+            TextObject.AddComponent<Canvas>();
+            rectTransform = TextObject.GetComponent<RectTransform>();
 
-            var textParent = new GameObject("TextParent");
-            textParent.transform.SetParent(TextObject.transform);
-            rectTransform = textParent.AddComponent<RectTransform>();
-
-            var textObject = new GameObject();
-            textObject.transform.SetParent(textParent.transform);
+            var textObject = new GameObject("Text");
+            textObject.transform.SetParent(TextObject.transform);
 
             text = textObject.AddComponent<Text>();
             text.font = RDString.GetFontDataForLanguage(RDString.language).font;
             text.alignment = ToTextAnchor(Main.setting.align);
-            text.fontSize = ReferenceFontSize;
+            text.fontSize = RefFontSize;
             text.color = Color.white;
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
 
@@ -107,8 +102,11 @@ namespace ShowBPM
             var pos = new Vector2(Main.setting.x, Main.setting.y);
             rectTransform.anchorMin = pos;
             rectTransform.anchorMax = pos;
-            rectTransform.pivot = pos;
+            rectTransform.pivot = new Vector2(GetAlignFloat(Main.setting.align), 1f);
             rectTransform.anchoredPosition = Vector2.zero;
+
+            float s = Main.setting.size / (float)RefFontSize;
+            TextObject.transform.localScale = new Vector3(s, s, 1);
 
             var rkpsObject = new GameObject("RealKPS");
             realKPSObject = rkpsObject;
@@ -117,7 +115,7 @@ namespace ShowBPM
 
             realKPSText = rkpsObject.AddComponent<Text>();
             realKPSText.font = RDString.GetFontDataForLanguage(RDString.language).font;
-            realKPSText.fontSize = ReferenceFontSize;
+            realKPSText.fontSize = RefFontSize;
             realKPSText.alignment = ToTextAnchor(Main.setting.align);
             realKPSText.color = Color.white;
             realKPSText.horizontalOverflow = HorizontalWrapMode.Overflow;

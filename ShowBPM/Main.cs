@@ -206,6 +206,7 @@ namespace ShowBPM
                 if (GUILayout.Button(alignTexts[i], alignButtonStyle))
                 {
                     setting.align = i;
+                    gui.SetPosition(setting.x, setting.y);
                 }
             }
 

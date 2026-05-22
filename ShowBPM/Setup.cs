@@ -10,8 +10,5 @@ namespace ShowBPM
             Main.Setup(modEntry);
 
         }
-
-
-
     }
 }
