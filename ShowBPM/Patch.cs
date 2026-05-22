@@ -142,10 +142,14 @@ internal static class Patch
                 displayLines.Add(Main.setting.text3.Replace("{value}", Math.Round(kps).ToString()));
             }
 
-            if (Main.setting.onNextBpm && floor.nextfloor != null)
+            if (Main.setting.onNextBpm)
             {
-                double nextTileBpm = floor.nextfloor.speed * bpm * playbackSpeed * pitch;
-                displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextTileBpm)));
+                var nextChange = GetNextSpeedChangeFloor(floor);
+                if (nextChange != null)
+                {
+                    double nextBpm = nextChange.speed * bpm * playbackSpeed * pitch;
+                    displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm)));
+                }
             }
 
             if (scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
@@ -328,6 +332,20 @@ internal static class Patch
         return 60.0 / (floor.nextfloor.entryTime - floor.entryTime);
     }
 
+    private static scrFloor GetNextSpeedChangeFloor(scrFloor floor)
+    {
+        if (floor == null) return null;
+        double currentSpeed = floor.speed;
+        scrFloor next = floor.nextfloor;
+        while (next != null)
+        {
+            if (!DoubleEqual(next.speed, currentSpeed))
+                return next;
+            next = next.nextfloor;
+        }
+        return null;
+    }
+
     public static string Repeat(string value, int count)
     {
         return new StringBuilder(value.Length * count).Insert(0, value, count).ToString();
@@ -406,10 +424,14 @@ internal static class Patch
             displayLines.Add(Main.setting.text3.Replace("{value}", Math.Round(kps).ToString()));
         }
 
-        if (Main.setting.onNextBpm && controller.currFloor != null && controller.currFloor.nextfloor != null)
+        if (Main.setting.onNextBpm && controller.currFloor != null)
         {
-            double nextTileBpm = controller.currFloor.nextfloor.speed * bpm * playbackSpeed * pitch;
-            displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextTileBpm)));
+            var nextChange = GetNextSpeedChangeFloor(controller.currFloor);
+            if (nextChange != null)
+            {
+                double nextBpm = nextChange.speed * bpm * playbackSpeed * pitch;
+                displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm)));
+            }
         }
 
         Main.gui.SetText(string.Join("\n", displayLines));
