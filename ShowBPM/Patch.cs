@@ -114,7 +114,8 @@ internal static class Patch
             if (!Main.IsEnabled || !__instance.controller.gameworld || floor == null || floor.nextfloor == null)
                 return;
 
-            var displayItems = new List<(int order, string text)>();
+            var displayItems = new List<(int order, int index, string text)>();
+            int insertIndex = 0;
 
             double planetSpeed = __instance.controller.planetarySystem.speed;
             double curFloorBpm = GetRealBpm(floor, bpm) * playbackSpeed * pitch;
@@ -128,18 +129,18 @@ internal static class Patch
 
             if (Main.setting.onTileBpm)
             {
-                displayItems.Add((Main.setting.tileBpmOrder, Main.setting.text1.Replace("{value}", FormatValue((float)(bpm * planetSpeed)))));
+                displayItems.Add((Main.setting.tileBpmOrder, insertIndex++, Main.setting.text1.Replace("{value}", FormatValue((float)(bpm * planetSpeed)))));
             }
 
             if (Main.setting.onCurBpm)
             {
-                displayItems.Add((Main.setting.realBpmOrder, Main.setting.text2.Replace("{value}", FormatValue((float)curFloorBpm))));
+                displayItems.Add((Main.setting.realBpmOrder, insertIndex++, Main.setting.text2.Replace("{value}", FormatValue((float)curFloorBpm))));
             }
 
             if (Main.setting.onRecommandKPS)
             {
                 double kps = curFloorBpm / 60.0;
-                displayItems.Add((Main.setting.kpsOrder, Main.setting.text3.Replace("{value}", Math.Round(kps).ToString())));
+                displayItems.Add((Main.setting.kpsOrder, insertIndex++, Main.setting.text3.Replace("{value}", Math.Round(kps).ToString())));
             }
 
             if (Main.setting.onNextBpm)
@@ -148,11 +149,15 @@ internal static class Patch
                 if (nextChange != null)
                 {
                     double nextBpm = nextChange.speed * bpm * playbackSpeed * pitch;
-                    displayItems.Add((Main.setting.nextBpmOrder, Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm))));
+                    displayItems.Add((Main.setting.nextBpmOrder, insertIndex++, Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm))));
                 }
             }
 
-            displayItems.Sort((a, b) => a.order.CompareTo(b.order));
+            displayItems.Sort((a, b) =>
+            {
+                int cmp = a.order.CompareTo(b.order);
+                return cmp != 0 ? cmp : a.index.CompareTo(b.index);
+            });
 
             if (scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
             {
@@ -376,7 +381,8 @@ internal static class Patch
     {
         Main.gui.TextObject.SetActive(true);
 
-        var displayItems = new List<(int order, string text)>();
+        var displayItems = new List<(int order, int index, string text)>();
+        int insertIndex = 0;
 
         if (scnGame.instance != null)
         {
@@ -412,18 +418,18 @@ internal static class Patch
 
         if (Main.setting.onTileBpm)
         {
-            displayItems.Add((Main.setting.tileBpmOrder, Main.setting.text1.Replace("{value}", FormatValue(tileBpm))));
+            displayItems.Add((Main.setting.tileBpmOrder, insertIndex++, Main.setting.text1.Replace("{value}", FormatValue(tileBpm))));
         }
 
         if (Main.setting.onCurBpm)
         {
-            displayItems.Add((Main.setting.realBpmOrder, Main.setting.text2.Replace("{value}", FormatValue(tileBpm))));
+            displayItems.Add((Main.setting.realBpmOrder, insertIndex++, Main.setting.text2.Replace("{value}", FormatValue(tileBpm))));
         }
 
         if (Main.setting.onRecommandKPS)
         {
             float kps = tileBpm / 60f;
-            displayItems.Add((Main.setting.kpsOrder, Main.setting.text3.Replace("{value}", Math.Round(kps).ToString())));
+            displayItems.Add((Main.setting.kpsOrder, insertIndex++, Main.setting.text3.Replace("{value}", Math.Round(kps).ToString())));
         }
 
         if (Main.setting.onNextBpm && controller.currFloor != null)
@@ -432,11 +438,15 @@ internal static class Patch
             if (nextChange != null)
             {
                 double nextBpm = nextChange.speed * bpm * playbackSpeed * pitch;
-                displayItems.Add((Main.setting.nextBpmOrder, Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm))));
+                displayItems.Add((Main.setting.nextBpmOrder, insertIndex++, Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm))));
             }
         }
 
-        displayItems.Sort((a, b) => a.order.CompareTo(b.order));
+        displayItems.Sort((a, b) =>
+        {
+            int cmp = a.order.CompareTo(b.order);
+            return cmp != 0 ? cmp : a.index.CompareTo(b.index);
+        });
         Main.gui.SetText(string.Join("\n", displayItems.ConvertAll(x => x.text)));
         Main.gui.SetSize(Main.setting.size);
     }
