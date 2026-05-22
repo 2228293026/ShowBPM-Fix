@@ -1,0 +1,6 @@
+﻿bin
+obj
+build.sh
+.idea
+.vs/
+*.DotSettings.user
