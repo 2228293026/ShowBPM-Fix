@@ -12,6 +12,19 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
+    - name: Extract version from tag
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}" -replace '^v', ''
+        echo "VERSION=$version" >> $env:GITHUB_ENV
+
+    - name: Update Info.json
+      shell: pwsh
+      run: |
+        $info = Get-Content Info.json -Raw | ConvertFrom-Json
+        $info.Version = "$env:VERSION"
+        $info | ConvertTo-Json | Set-Content Info.json -Encoding UTF8
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
 
@@ -22,7 +35,7 @@ jobs:
       run: nuget restore ShowBPM.sln
 
     - name: Build
-      run: msbuild ShowBPM.sln /p:Configuration=Release /p:Platform="Any CPU"
+      run: msbuild ShowBPM.sln /p:Configuration=Release /p:Platform="Any CPU" /p:Version="$env:VERSION"
 
     - name: Create archive
       shell: pwsh
