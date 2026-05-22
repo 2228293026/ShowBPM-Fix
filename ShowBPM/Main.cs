@@ -82,11 +82,13 @@ namespace ShowBPM
             DrawToggleTextField(ref setting.onCurBpm, language.showRealBPM, ref setting.text2, language.setRealBPM);
             DrawToggleTextField(ref setting.onRecommandKPS, language.showKPS, ref setting.text3, language.setKPS);
 
+            DrawToggleTextField(ref setting.onNextBpm, language.showNextBPM, ref setting.text5, language.setNextBPM);
+
             DrawSpeedTextToggle();
 
             DrawToggleTextField(ref setting.showRealKPS, language.showRealKPS, ref setting.text4, language.setRealKPS);
 
-            if (!setting.onTileBpm && !setting.onCurBpm && !setting.onRecommandKPS)
+            if (!setting.onTileBpm && !setting.onCurBpm && !setting.onRecommandKPS && !setting.onNextBpm)
             {
                 return;
             }

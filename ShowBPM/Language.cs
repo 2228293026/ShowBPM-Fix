@@ -27,6 +27,8 @@
         
         public string showSpeedText;
         public string showRealKPS;
+        public string showNextBPM;
+        public string setNextBPM;
     }
     
     public class Korean : Language
@@ -58,6 +60,8 @@
             
             showSpeedText = "속도 표시";
             showRealKPS = "실제 초당 클릭";
+            showNextBPM = "다음 BPM 띄우기";
+            setNextBPM = "다음 BPM 글자";
         }
     }
     
@@ -90,6 +94,8 @@
             
             showSpeedText = "Show Speed Text";
             showRealKPS = "Real Key Per Second";
+            showNextBPM = "Show Next BPM";
+            setNextBPM = "Next BPM Text";
         }
     }
 
@@ -122,6 +128,8 @@
             
             showSpeedText = "显示速度文本";
             showRealKPS = "每秒实际按键数";
+            showNextBPM = "显示下一个BPM";
+            setNextBPM = "下一个BPM文本";
         }
     }
 }

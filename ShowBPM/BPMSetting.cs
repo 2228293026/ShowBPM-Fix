@@ -12,6 +12,7 @@ namespace ShowBPM
         public bool onTileBpm = true;
         public bool onCurBpm = true;
         public bool onRecommandKPS = true;
+        public bool onNextBpm = false;
         public bool showRealKPS = false;
 
         // Text appearance
@@ -38,6 +39,7 @@ namespace ShowBPM
         public string text2 = "체감 BPM - {value}";
         public string text3 = "초당 클릭 수 - {value}";
         public string text4 = "Real KPS - {value}";
+        public string text5 = "Next BPM - {value}";
 
         public override void Save(UnityModManager.ModEntry modEntry)
         {
