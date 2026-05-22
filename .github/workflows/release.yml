@@ -43,7 +43,7 @@ jobs:
     - name: Create archive
       shell: pwsh
       run: |
-        Compress-Archive -Path ShowBPM\bin\Release\net4.8\* -DestinationPath ShowBPM-${{ github.ref_name }}.zip
+        Compress-Archive -Path ShowBPM\bin\Release\net4.8\ShowBPM.dll,Info.json -DestinationPath ShowBPM-${{ github.ref_name }}.zip
 
     - name: Create Release
       uses: softprops/action-gh-release@v2

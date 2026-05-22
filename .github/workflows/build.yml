@@ -29,4 +29,6 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: ShowBPM-${{ github.sha }}
-        path: ShowBPM/bin/Release/
+        path: |
+          ShowBPM/bin/Release/net4.8/ShowBPM.dll
+          Info.json
