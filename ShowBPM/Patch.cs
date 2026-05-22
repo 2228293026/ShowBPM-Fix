@@ -408,6 +408,9 @@ internal static class Patch
     {
         foreach (var floor in scrLevelMaker.instance.listFloors)
         {
+            if (floor.isFake)
+                continue;
+
             var nextFloor = floor.nextfloor;
 
             if (nextFloor == null || nextFloor.editorNumText == null)

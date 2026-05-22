@@ -25,6 +25,8 @@ namespace ShowBPM
         public void SetText(string content)
         {
             text.text = content;
+            text.rectTransform.sizeDelta = new Vector2(text.preferredWidth, text.preferredHeight);
+            SyncKpsStyle();
         }
 
         public void SetPosition(float x, float y)
@@ -69,7 +71,10 @@ namespace ShowBPM
             mainCanvas.sortingOrder = 10001;
 
             var scaler = gameObject.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0.5f;
 
             TextObject = new GameObject();
             TextObject.transform.SetParent(transform);
