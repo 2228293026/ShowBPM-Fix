@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v3
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v3
+
+    - name: Restore NuGet packages
+      run: nuget restore ShowBPM.sln
+
+    - name: Build
+      run: msbuild ShowBPM.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Create archive
+      shell: pwsh
+      run: |
+        Compress-Archive -Path ShowBPM\bin\Release\net4.8\* -DestinationPath ShowBPM-${{ github.ref_name }}.zip
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: ShowBPM ${{ github.ref_name }}
+        generate_release_notes: true
+        files: ShowBPM-${{ github.ref_name }}.zip
