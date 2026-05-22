@@ -144,7 +144,8 @@ internal static class Patch
 
             if (Main.setting.onNextBpm && floor.nextfloor != null)
             {
-                displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextFloorBpm)));
+                double nextTileBpm = floor.nextfloor.speed * bpm * playbackSpeed * pitch;
+                displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextTileBpm)));
             }
 
             if (scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
@@ -407,8 +408,8 @@ internal static class Patch
 
         if (Main.setting.onNextBpm && controller.currFloor != null && controller.currFloor.nextfloor != null)
         {
-            double nextBpm = GetRealBpm(controller.currFloor.nextfloor, bpm) * playbackSpeed * pitch;
-            displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextBpm)));
+            double nextTileBpm = controller.currFloor.nextfloor.speed * bpm * playbackSpeed * pitch;
+            displayLines.Add(Main.setting.text5.Replace("{value}", FormatValue((float)nextTileBpm)));
         }
 
         Main.gui.SetText(string.Join("\n", displayLines));
