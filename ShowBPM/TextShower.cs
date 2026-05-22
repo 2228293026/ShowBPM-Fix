@@ -117,7 +117,16 @@ namespace ShowBPM
 
         void Update()
         {
-            if (!Main.IsEnabled || !TextObject.activeInHierarchy)
+            if (!Main.IsEnabled)
+                return;
+
+            if (TextObject.activeSelf && !IsInGameContext())
+            {
+                TextObject.SetActive(false);
+                return;
+            }
+
+            if (!TextObject.activeInHierarchy)
                 return;
 
             realKPSObject.SetActive(Main.setting.showRealKPS);
@@ -133,6 +142,11 @@ namespace ShowBPM
                 lastRealKPSText = kpsStr;
                 realKPSText.text = Main.setting.text4.Replace("{value}", kpsStr);
             }
+        }
+
+        private static bool IsInGameContext()
+        {
+            return scrController.instance != null && scrController.instance.gameworld;
         }
 
         public TextAnchor ToTextAnchor(int align)

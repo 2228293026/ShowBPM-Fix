@@ -60,6 +60,8 @@ internal static class Patch
         }
     }
 
+
+
     [HarmonyPatch(typeof(scrController), "Awake")]
     internal static class ControllerAwakePatch
     {
@@ -109,7 +111,7 @@ internal static class Patch
     {
         public static void Postfix(scrPlanet __instance, scrFloor floor)
         {
-            if (!Main.IsEnabled || !__instance.controller.gameworld || floor.nextfloor == null)
+            if (!Main.IsEnabled || !__instance.controller.gameworld || floor == null || floor.nextfloor == null)
                 return;
 
             var displayLines = new List<string>();
@@ -192,6 +194,9 @@ internal static class Patch
 
             foreach (var floor in __instance.floors)
             {
+                if (!floor.enabled)
+                    continue;
+
                 if (string.IsNullOrEmpty(floor.editorNumText.letterText.text))
                     continue;
 
@@ -203,7 +208,7 @@ internal static class Patch
                     floor.editorNumText.letterText.color = basicColor;
                 }
 
-                floor.editorNumText.gameObject.SetActive(__instance.showFloorNums && !__instance.playMode);
+                floor.editorNumText.gameObject.SetActive(__instance.showFloorNums && !__instance.playMode && !floor.isFake);
             }
 
             return false;
@@ -271,7 +276,7 @@ internal static class Patch
             if (ADOBase.editor != null && ADOBase.editor.showFloorNums && !ADOBase.editor.playMode && ADOBase.isLevelEditor)
             {
                 __instance.editorNumText.letterText.text = __instance.seqID.ToString();
-                bool active = ADOBase.editor.showFloorNums && !ADOBase.editor.playMode;
+                bool active = ADOBase.editor.showFloorNums && !ADOBase.editor.playMode && !__instance.isFake;
                 __instance.editorNumText.gameObject.SetActive(active);
             }
 
