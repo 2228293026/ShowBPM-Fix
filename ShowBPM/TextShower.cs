@@ -15,13 +15,12 @@ namespace ShowBPM
         private RectTransform realKPSRectTransform;
         private GameObject realKPSObject;
         private string lastRealKPSText;
+        private const int ReferenceFontSize = 40;
 
         public void SetSize(int size)
         {
-            float scale = Screen.height / 1080f;
-            text.fontSize = Mathf.Max(1, Mathf.RoundToInt(size * scale));
-            text.rectTransform.sizeDelta = new Vector2(text.preferredWidth, text.preferredHeight);
-            SyncKpsStyle();
+            float s = size / (float)ReferenceFontSize;
+            TextObject.transform.localScale = new Vector3(s, s, 1);
         }
 
         public void SetText(string content)
@@ -44,15 +43,11 @@ namespace ShowBPM
         {
             if (realKPSText == null) return;
 
-            float scale = Screen.height / 1080f;
-            int fontSize = Mathf.Max(1, Mathf.RoundToInt(Main.setting.size * scale));
-
             float alignX = GetAlignFloat(Main.setting.align);
             realKPSRectTransform.anchorMin = new Vector2(alignX, 0);
             realKPSRectTransform.anchorMax = new Vector2(alignX, 0);
             realKPSRectTransform.pivot = new Vector2(alignX, 1);
             realKPSRectTransform.anchoredPosition = new Vector2(0, -5);
-            realKPSText.fontSize = fontSize;
             realKPSText.fontStyle = Main.setting.useBold ? FontStyle.Bold : FontStyle.Normal;
             realKPSText.font = text.font;
             realKPSShadow.enabled = Main.setting.useShadow;
@@ -76,23 +71,32 @@ namespace ShowBPM
             mainCanvas.sortingOrder = 10001;
 
             var scaler = gameObject.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.matchWidthOrHeight = 1f;
 
-            TextObject = new GameObject();
+            TextObject = new GameObject("SizeWrapper");
             TextObject.transform.SetParent(transform);
-            TextObject.AddComponent<Canvas>();
-            rectTransform = TextObject.GetComponent<RectTransform>();
+            var wrapperRect = TextObject.AddComponent<RectTransform>();
+            wrapperRect.anchorMin = Vector2.zero;
+            wrapperRect.anchorMax = Vector2.one;
+            wrapperRect.pivot = Vector2.zero;
+            wrapperRect.offsetMin = Vector2.zero;
+            wrapperRect.offsetMax = Vector2.zero;
+            float s = Main.setting.size / (float)ReferenceFontSize;
+            TextObject.transform.localScale = new Vector3(s, s, 1);
+
+            var textParent = new GameObject("TextParent");
+            textParent.transform.SetParent(TextObject.transform);
+            rectTransform = textParent.AddComponent<RectTransform>();
 
             var textObject = new GameObject();
-            textObject.transform.SetParent(TextObject.transform);
-
-            float scale = Screen.height / 1080f;
-            int fontSize = Mathf.Max(1, Mathf.RoundToInt(Main.setting.size * scale));
+            textObject.transform.SetParent(textParent.transform);
 
             text = textObject.AddComponent<Text>();
             text.font = RDString.GetFontDataForLanguage(RDString.language).font;
             text.alignment = ToTextAnchor(Main.setting.align);
-            text.fontSize = fontSize;
+            text.fontSize = ReferenceFontSize;
             text.color = Color.white;
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
 
@@ -113,7 +117,7 @@ namespace ShowBPM
 
             realKPSText = rkpsObject.AddComponent<Text>();
             realKPSText.font = RDString.GetFontDataForLanguage(RDString.language).font;
-            realKPSText.fontSize = fontSize;
+            realKPSText.fontSize = ReferenceFontSize;
             realKPSText.alignment = ToTextAnchor(Main.setting.align);
             realKPSText.color = Color.white;
             realKPSText.horizontalOverflow = HorizontalWrapMode.Overflow;
