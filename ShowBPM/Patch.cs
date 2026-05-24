@@ -111,7 +111,8 @@ internal static class Patch
     {
         public static void Postfix(scrPlanet __instance, scrFloor floor)
         {
-            if (!Main.IsEnabled || !__instance.controller.gameworld || floor == null || floor.nextfloor == null)
+            if (!Main.IsEnabled || __instance.controller == null || !__instance.controller.gameworld
+                || __instance.controller.planetarySystem == null || floor == null || floor.nextfloor == null)
                 return;
 
             var displayItems = new List<(int order, int index, string text)>();
@@ -159,7 +160,10 @@ internal static class Patch
                 return cmp != 0 ? cmp : a.index.CompareTo(b.index);
             });
 
-            if (scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
+            if (scnGame.instance != null && scnGame.instance.levelData != null
+                && scnGame.instance.levelData.angleData != null
+                && scrController.instance != null
+                && scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
             {
                 callRateTracker.TrackCall();
             }
@@ -172,6 +176,9 @@ internal static class Patch
         private static bool DetermineIfSpeedTransition(scrPlanet planet, scrFloor floor, double nextFloorBpm, double curFloorBpm)
         {
             if (!Main.setting.ignoreMultipress)
+                return false;
+
+            if (planet.conductor == null || planet.controller.planetarySystem == null)
                 return false;
 
             double angleMoved = scrMisc.GetAngleMoved(floor.entryangle, floor.exitangle, !floor.isCCW);
