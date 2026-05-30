@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.3 (2026-05-31)
+
+### Fixed
+- Fixed NullReferenceException in MoveToNextFloorPatch.Postfix
+
 ## 1.4.2 (2026-05-23)
 
 ### Added

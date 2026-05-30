@@ -2,7 +2,7 @@
   "Id": "ShowBPM",
   "DisplayName": "ShowBPM",
   "Author": "Flower",
-  "Version": "1.4.2",
+  "Version": "1.4.3",
   "AssemblyName": "ShowBPM.dll",
   "EntryMethod": "ShowBPM.Setup.Load"
 }
