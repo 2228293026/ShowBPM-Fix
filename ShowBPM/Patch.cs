@@ -163,6 +163,8 @@ internal static class Patch
             if (scnGame.instance != null && scnGame.instance.levelData != null
                 && scnGame.instance.levelData.angleData != null
                 && scrController.instance != null
+                && scrController.instance.currentSeqID >= 0
+                && scrController.instance.currentSeqID < scnGame.instance.levelData.angleData.Count
                 && scnGame.instance.levelData.angleData[scrController.instance.currentSeqID] != 999)
             {
                 callRateTracker.TrackCall();

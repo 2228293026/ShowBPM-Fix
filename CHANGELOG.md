@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.4-preview.1 (2026-05-31)
+
+### Fixed
+- Fixed ArgumentOutOfRangeException in MoveToNextFloorPatch.Postfix when currentSeqID is out of angleData bounds during simulated input
+
 ## 1.4.3 (2026-05-31)
 
 ### Fixed
