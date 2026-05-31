@@ -4,9 +4,9 @@
     <TargetFramework>net4.8</TargetFramework>
     <LangVersion>10.0</LangVersion>
     <LibsDir Condition="'$(LibsDir)' == ''">..\libs</LibsDir>
-    <Version Condition="'$(Version)' == ''">1.0.0.0</Version>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <FileVersion>$(Version)</FileVersion>
+    <Version Condition="'$(Version)' == ''">1.4.4</Version>
+    <AssemblyVersion>$(Version.Split('-')[0]).0</AssemblyVersion>
+    <FileVersion>$(Version.Split('-')[0]).0</FileVersion>
     <InformationalVersion Condition="'$(InformationalVersion)' == ''">$(Version)</InformationalVersion>
     <Product>ShowBPM</Product>
     <Company>ShowBPM</Company>
