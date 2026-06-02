@@ -12,6 +12,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Restore game DLLs from git history
+      run: git checkout v1.4.3 -- libs/
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
