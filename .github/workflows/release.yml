@@ -20,7 +20,7 @@ jobs:
       with:
         repository: 2228293026/adofai-libs
         token: ${{ secrets.LIBS_ACCESS_TOKEN }}
-        path: ../libs
+        path: libs
 
     - name: Extract version from tag
       shell: pwsh

@@ -18,7 +18,7 @@ jobs:
       with:
         repository: 2228293026/adofai-libs
         token: ${{ secrets.LIBS_ACCESS_TOKEN }}
-        path: ../libs
+        path: libs
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
